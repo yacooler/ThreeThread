@@ -3,23 +3,22 @@ public class RunnableObject implements  Runnable {
     private Character next;
 
     static volatile Character currentChar = 'A';
-    Object sync;
 
-    public RunnableObject(Character output, Character next, Object sync) {
+    public RunnableObject(Character output, Character next) {
         this.output = output;
         this.next = next;
-        this.sync = sync;
     }
 
 
     @Override
     public void run() {
-        synchronized (sync) {
+
+        synchronized (RunnableObject.class) {
             try {
                 for (int i = 0; i < 5; i++) {
                     //Проверяем в цикле, т.к. разбудить может кто угодно, возможно придется заснуть снова
                     while (!currentChar.equals(output)){
-                        sync.wait();
+                        RunnableObject.class.wait();
                     }
 
                     //Печатаем текущий символ
@@ -27,7 +26,7 @@ public class RunnableObject implements  Runnable {
                     //Устанавливаем следующий
                     currentChar = next;
                     //Будим спящих, пусть проверят, не должны ли они обработать новый символ
-                    sync.notifyAll();
+                    RunnableObject.class.notifyAll();
                 }
 
             } catch (InterruptedException e) {
