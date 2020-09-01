@@ -22,13 +22,16 @@ public class RunnableObject implements  Runnable {
                         sync.wait();
                     }
 
+                    //Печатаем текущий символ
                     System.out.println(output);
+                    //Устанавливаем следующий
                     currentChar = next;
+                    //Будим спящих, пусть проверят, не должны ли они обработать новый символ
                     sync.notifyAll();
                 }
 
             } catch (InterruptedException e) {
-                throw new RuntimeException("Thread 1", e);
+                throw new RuntimeException("Thread " + output, e);
             }
         }
 
